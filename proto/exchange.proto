@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package exchange;
+
+option go_package = "github.com/kvvPro/gophkeeper/proto";
+
+service Exchange {
+	rpc Ping(PingRequest) returns (PingResponse) {}
+	rpc Register(AuthRequest) returns (AuthResponse) {}
+	rpc Auth(AuthRequest) returns (AuthResponse) {}
+	rpc PutUserData(UserData) returns (PutDelInfoResponse) {}
+	rpc PutRawData(RawData) returns (PutDelInfoResponse) {}
+	rpc PutTextData(TextData) returns (PutDelInfoResponse) {}
+	rpc PutCardData(CardData) returns (PutDelInfoResponse) {}
+	rpc DeleteInfo(InfoRequest) returns (PutDelInfoResponse) {}
+	rpc GetInfo(InfoRequest) returns (GetInfoResponse) {}
+}
+
+message PingRequest {}
+message PingResponse {}
+message AuthRequest {
+	UserData UserInfo = 1;
+}
+message AuthResponse {
+	string Error = 1;
+	string AuthToken = 2;
+
+}
+message PutInfoRequest {
+	optional UserData Logins = 1;
+	repeated RawData Raws = 2;
+	repeated TextData Texts = 3;
+}
+message PutDelInfoResponse {}
+message InfoRequest {
+	string Key = 1;
+	string ResourceType = 2;
+}
+message GetInfoResponse {
+	string Error = 1;
+	optional UserData User = 2;
+	optional RawData Raw = 3;
+	optional TextData Text = 4;
+}
+
+message UserData {
+    string Login = 1;
+	string Password = 2;
+	repeated Metadata MetaInfo = 3;
+
+}
+message RawData {
+	string Key = 1;
+	bytes Value = 2;
+	repeated Metadata MetaInfo = 3;
+}
+message TextData {
+	string Key = 1;
+	string Value = 2;
+	repeated Metadata MetaInfo = 3;
+}
+message CardData {
+	string Key = 1;
+	string CardNumber = 2;
+	string Pin = 3;
+	string CVC = 4;
+	repeated Metadata MetaInfo = 5;
+}
+message Metadata {
+	string Key = 1;
+	string Value = 2;
+}
