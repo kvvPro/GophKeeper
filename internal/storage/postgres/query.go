@@ -83,8 +83,45 @@ func addUserQuery() string {
 func getUserQuery() string {
 	return `
 	select login, password
-		from public.users
+	from public.users
 	where
 		login = $1
+	`
+}
+
+func getUserDataQuery() string {
+	return `
+	select auth_info.id,
+			auth_info.login, 
+			auth_info.password
+	from auth_info 
+		inner join data data_info 
+		on data_info.id = auth_info.id
+	where 
+		data_info.key = $1 and data_info.owner = $2
+	`
+}
+
+func getMetadataQuery() string {
+	return `
+	select key, value
+	from metainfo
+	where owner = $1
+	`
+}
+
+func updateUserDataQuery() string {
+	return `
+	update public.auth_info
+	set login=$1, password=$2
+	where 
+		id in (select 
+					data_info.id 
+				from 
+					data data_info 
+				where 
+					data_info.key=$3 
+					and data_info.owner=$4)
+	returning login, password
 	`
 }

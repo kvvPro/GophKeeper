@@ -6,8 +6,8 @@ option go_package = "github.com/kvvPro/gophkeeper/proto";
 
 service Exchange {
 	rpc Ping(PingRequest) returns (PingResponse) {}
-	rpc Register(AuthRequest) returns (AuthResponse) {}
-	rpc Auth(AuthRequest) returns (AuthResponse) {}
+	rpc Register(AuthInfo) returns (AuthResponse) {}
+	rpc Auth(AuthInfo) returns (AuthResponse) {}
 	rpc PutUserData(UserData) returns (PutDelInfoResponse) {}
 	rpc PutRawData(RawData) returns (PutDelInfoResponse) {}
 	rpc PutTextData(TextData) returns (PutDelInfoResponse) {}
@@ -18,18 +18,14 @@ service Exchange {
 
 message PingRequest {}
 message PingResponse {}
-message AuthRequest {
-	UserData UserInfo = 1;
+message AuthInfo {
+	string Login = 1;
+	string Password = 2;
 }
 message AuthResponse {
 	string Error = 1;
 	string AuthToken = 2;
 
-}
-message PutInfoRequest {
-	optional UserData Logins = 1;
-	repeated RawData Raws = 2;
-	repeated TextData Texts = 3;
 }
 message PutDelInfoResponse {}
 message InfoRequest {
@@ -44,9 +40,10 @@ message GetInfoResponse {
 }
 
 message UserData {
-    string Login = 1;
-	string Password = 2;
-	repeated Metadata MetaInfo = 3;
+	string Key = 1;
+    string Login = 2;
+	string Password = 3;
+	repeated Metadata MetaInfo = 4;
 
 }
 message RawData {

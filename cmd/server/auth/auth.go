@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/kvvPro/gophkeeper/internal/model"
+	pb "github.com/kvvPro/gophkeeper/proto"
 )
 
 // Claims — структура утверждений, которая включает стандартные утверждения
@@ -42,7 +42,7 @@ func BuildJWTString(login string) (string, error) {
 	return tokenString, nil
 }
 
-func GetUserInfo(tokenString string) (*model.User, error) {
+func GetUserInfo(tokenString string) (*pb.AuthInfo, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -59,7 +59,7 @@ func GetUserInfo(tokenString string) (*model.User, error) {
 		return nil, errors.New("token is not valid")
 	}
 
-	return &model.User{
+	return &pb.AuthInfo{
 			Login: claims.UserLogin},
 		nil
 }

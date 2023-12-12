@@ -35,8 +35,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExchangeClient interface {
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
-	Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	Register(ctx context.Context, in *AuthInfo, opts ...grpc.CallOption) (*AuthResponse, error)
+	Auth(ctx context.Context, in *AuthInfo, opts ...grpc.CallOption) (*AuthResponse, error)
 	PutUserData(ctx context.Context, in *UserData, opts ...grpc.CallOption) (*PutDelInfoResponse, error)
 	PutRawData(ctx context.Context, in *RawData, opts ...grpc.CallOption) (*PutDelInfoResponse, error)
 	PutTextData(ctx context.Context, in *TextData, opts ...grpc.CallOption) (*PutDelInfoResponse, error)
@@ -62,7 +62,7 @@ func (c *exchangeClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *exchangeClient) Register(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *exchangeClient) Register(ctx context.Context, in *AuthInfo, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
 	err := c.cc.Invoke(ctx, Exchange_Register_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -71,7 +71,7 @@ func (c *exchangeClient) Register(ctx context.Context, in *AuthRequest, opts ...
 	return out, nil
 }
 
-func (c *exchangeClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+func (c *exchangeClient) Auth(ctx context.Context, in *AuthInfo, opts ...grpc.CallOption) (*AuthResponse, error) {
 	out := new(AuthResponse)
 	err := c.cc.Invoke(ctx, Exchange_Auth_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -139,8 +139,8 @@ func (c *exchangeClient) GetInfo(ctx context.Context, in *InfoRequest, opts ...g
 // for forward compatibility
 type ExchangeServer interface {
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
-	Register(context.Context, *AuthRequest) (*AuthResponse, error)
-	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
+	Register(context.Context, *AuthInfo) (*AuthResponse, error)
+	Auth(context.Context, *AuthInfo) (*AuthResponse, error)
 	PutUserData(context.Context, *UserData) (*PutDelInfoResponse, error)
 	PutRawData(context.Context, *RawData) (*PutDelInfoResponse, error)
 	PutTextData(context.Context, *TextData) (*PutDelInfoResponse, error)
@@ -157,10 +157,10 @@ type UnimplementedExchangeServer struct {
 func (UnimplementedExchangeServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
-func (UnimplementedExchangeServer) Register(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedExchangeServer) Register(context.Context, *AuthInfo) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedExchangeServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
+func (UnimplementedExchangeServer) Auth(context.Context, *AuthInfo) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
 func (UnimplementedExchangeServer) PutUserData(context.Context, *UserData) (*PutDelInfoResponse, error) {
@@ -213,7 +213,7 @@ func _Exchange_Ping_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _Exchange_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthRequest)
+	in := new(AuthInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -225,13 +225,13 @@ func _Exchange_Register_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Exchange_Register_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExchangeServer).Register(ctx, req.(*AuthRequest))
+		return srv.(ExchangeServer).Register(ctx, req.(*AuthInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Exchange_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthRequest)
+	in := new(AuthInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -243,7 +243,7 @@ func _Exchange_Auth_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: Exchange_Auth_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExchangeServer).Auth(ctx, req.(*AuthRequest))
+		return srv.(ExchangeServer).Auth(ctx, req.(*AuthInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }

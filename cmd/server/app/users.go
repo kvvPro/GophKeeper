@@ -11,7 +11,7 @@ import (
 	pb "github.com/kvvPro/gophkeeper/proto"
 )
 
-func (srv *Server) AddUser(ctx context.Context, userInfo *pb.UserData) error {
+func (srv *Server) AddUser(ctx context.Context, userInfo *pb.AuthInfo) error {
 	// add user
 	err := retry.Do(func() error {
 		return srv.storage.AddUser(ctx, userInfo)
@@ -37,9 +37,9 @@ func (srv *Server) AddUser(ctx context.Context, userInfo *pb.UserData) error {
 	return err
 }
 
-func (srv *Server) GetUser(ctx context.Context, userInfo *pb.UserData) (*pb.UserData, error) {
+func (srv *Server) GetUser(ctx context.Context, userInfo *pb.AuthInfo) (*pb.AuthInfo, error) {
 	// get user
-	var user *pb.UserData
+	var user *pb.AuthInfo
 	var err error
 
 	err = retry.Do(func() error {
