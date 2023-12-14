@@ -1,6 +1,8 @@
 package model
 
-type User struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
-}
+const (
+	DataTypeUserData = "userdata"
+	DataTypeRawData  = "rawdata"
+	DataTypeTextData = "textdata"
+	DataTypeCardData = "carddata"
+)

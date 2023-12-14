@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"sync"
 
 	pb "github.com/kvvPro/gophkeeper/proto"
 	"google.golang.org/grpc"
@@ -34,7 +33,7 @@ type Server struct {
 	// Path to private key RSA
 	PrivateKeyPath string
 	// wait group for async saving
-	wg *sync.WaitGroup
+	//wg *sync.WaitGroup
 	// implement GRPC server
 	pb.UnimplementedExchangeServer
 	// GRPC server

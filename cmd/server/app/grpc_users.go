@@ -19,7 +19,8 @@ func (srv *Server) Register(ctx context.Context, req *pb.AuthInfo) (*pb.AuthResp
 	}
 
 	// create auth token
-	authToken, err := auth.BuildJWTString(req.Login)
+	uuid := auth.GenerateUUID()
+	authToken, err := auth.BuildJWTString(req.Login, uuid)
 	if err != nil {
 		Sugar.Errorf("ошибка при генерации токена: %v", err.Error())
 		return nil, err
@@ -46,7 +47,8 @@ func (srv *Server) Auth(ctx context.Context, req *pb.AuthInfo) (*pb.AuthResponse
 	}
 
 	// create auth token
-	authToken, err := auth.BuildJWTString(req.Login)
+	uuid := auth.GenerateUUID()
+	authToken, err := auth.BuildJWTString(req.Login, uuid)
 	if err != nil {
 		Sugar.Errorf("ошибка при генерации токена: %v", err.Error())
 		return nil, err

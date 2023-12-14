@@ -102,14 +102,6 @@ func getUserDataQuery() string {
 	`
 }
 
-func getMetadataQuery() string {
-	return `
-	select key, value
-	from metainfo
-	where owner = $1
-	`
-}
-
 func updateUserDataQuery() string {
 	return `
 	update public.auth_info
@@ -122,6 +114,60 @@ func updateUserDataQuery() string {
 				where 
 					data_info.key=$3 
 					and data_info.owner=$4)
-	returning login, password
+	`
+}
+
+func addUserDataQuery() string {
+	return `
+	DO $$ 
+	DECLARE
+		dataid INTEGER;
+	BEGIN
+		insert into public.data (owner, key, data_type)
+		values ($1, $2, $3)
+		returning id into dataid;
+
+		insert into public.auth_info (owner, key, value)
+		values (dataid, $4, $5);
+
+		RETURNING id INTO myid;
+	END $$
+	`
+}
+
+func deleteDataQuery() string {
+	return `
+	delete
+	from public.data
+	where public.data.key=$1 and public.data.owner=$2
+	`
+}
+
+func getMetadataQuery() string {
+	return `
+	select key, value
+	from metainfo
+	where owner = $1
+	`
+}
+
+func updateMetadataQuery() string {
+	return `
+	update metainfo
+	set key=$1, value=$2 
+	where
+		owner=(select data.id 
+			   from data
+			   where data.owner=$3
+			   		 and data.key=$4);
+	`
+}
+
+func addMetadataQuery() string {
+	return `
+	insert into public.metainfo (owner, key, value)
+	select data.id, $1, $2
+	from data
+	where data.owner=$3 and data.key=$4;
 	`
 }

@@ -40,12 +40,12 @@ func (srv *Server) authInterceptor(ctx context.Context, req interface{}, info *g
 		return nil, status.Error(codes.Aborted, "not found authorization token")
 	}
 
-	userInfo, err := auth.GetUserInfo(authToken)
+	clientInfo, err := auth.GetClientInfo(authToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 
-	newContext := context.WithValue(ctx, ctxKey("login"), userInfo.Login)
+	newContext := context.WithValue(ctx, ctxKey("clientInfo"), clientInfo)
 
 	return handler(newContext, req)
 }

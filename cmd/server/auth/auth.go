@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	pb "github.com/kvvPro/gophkeeper/proto"
+	"github.com/google/uuid"
 )
 
 // Claims — структура утверждений, которая включает стандартные утверждения
@@ -14,13 +14,19 @@ import (
 type Claims struct {
 	jwt.RegisteredClaims
 	UserLogin string
+	ClientID  string
+}
+
+type ClientInfo struct {
+	UserLogin string
+	ClientID  string
 }
 
 const tokenExp = time.Hour * 3
 const secretKey = "supersecretkey"
 
 // BuildJWTString создаёт токен и возвращает его в виде строки.
-func BuildJWTString(login string) (string, error) {
+func BuildJWTString(login string, clientID string) (string, error) {
 	// создаём новый токен с алгоритмом подписи HS256 и утверждениями — Claims
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -29,6 +35,7 @@ func BuildJWTString(login string) (string, error) {
 		},
 		// собственное утверждение
 		UserLogin: login,
+		ClientID:  clientID,
 	})
 
 	// создаём строку токена
@@ -42,7 +49,7 @@ func BuildJWTString(login string) (string, error) {
 	return tokenString, nil
 }
 
-func GetUserInfo(tokenString string) (*pb.AuthInfo, error) {
+func GetClientInfo(tokenString string) (*ClientInfo, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -59,7 +66,13 @@ func GetUserInfo(tokenString string) (*pb.AuthInfo, error) {
 		return nil, errors.New("token is not valid")
 	}
 
-	return &pb.AuthInfo{
-			Login: claims.UserLogin},
+	return &ClientInfo{
+			UserLogin: claims.UserLogin,
+			ClientID:  claims.ClientID,
+		},
 		nil
+}
+
+func GenerateUUID() string {
+	return uuid.New().String()
 }
