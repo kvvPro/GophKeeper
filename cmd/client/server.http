@@ -1,0 +1,5 @@
+proto < ../../proto/exchange.proto
+
+GRPC localhost:3200/Exchange/Ping
+Authorization: "-"
+{}

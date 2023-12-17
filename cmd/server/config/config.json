@@ -6,8 +6,8 @@
     "database_dsn": "",
     "hash_key": "",
     "mem_profile": "base.pprof",
-    "crypto_key": "/workspaces/metric-collector/cmd/keys/key",
+    "crypto_key": "/workspaces/gophkeeper/cmd/keys/key",
     "trusted_subnet": "192.168.1.0/24",
     "exchange_mode": "grpc",
-    "config": "/workspaces/metric-collector/cmd/server/config/config.json"
+    "config": "/workspaces/gophkeeper/cmd/server/config/config.json"
 } 

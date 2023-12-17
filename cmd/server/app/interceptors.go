@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/kvvPro/gophkeeper/cmd/server/auth"
@@ -30,6 +31,12 @@ type ctxKey string
 
 func (srv *Server) authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	var authToken string
+	// exclude ping
+	if strings.Contains(info.FullMethod, "Ping") ||
+		strings.Contains(info.FullMethod, "Register") ||
+		strings.Contains(info.FullMethod, "Auth") {
+		return handler(ctx, req)
+	}
 	if md, ok := metadata.FromIncomingContext(ctx); ok {
 		param := md.Get("Authorization")
 		if len(param) > 0 {
